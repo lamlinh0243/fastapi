@@ -9,12 +9,6 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 DATABASE_URL = "todo.db"
-
-
-# =========================
-# Database
-# =========================
-
 def get_db() -> Generator[sqlite3.Connection, None, None]:
     db = sqlite3.connect(DATABASE_URL)
     db.row_factory = sqlite3.Row
@@ -23,8 +17,6 @@ def get_db() -> Generator[sqlite3.Connection, None, None]:
         yield db
     finally:
         db.close()
-
-
 def create_tables() -> None:
     db = sqlite3.connect(DATABASE_URL)
 
@@ -39,15 +31,10 @@ def create_tables() -> None:
         )
         """
     )
-
     db.commit()
     db.close()
 
-
-# =========================
 # Lifespan
-# =========================
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Starting application...")
@@ -57,11 +44,7 @@ async def lifespan(app: FastAPI):
 
     print("Shutting down application...")
 
-
-# =========================
 # FastAPI application
-# =========================
-
 app = FastAPI(
     title="Todo API",
     description="FastAPI homework project",
@@ -69,11 +52,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-
-# =========================
 # CORS
-# =========================
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -82,11 +61,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# =========================
 # Pydantic models
-# =========================
-
 class TodoCreate(BaseModel):
     title: str = Field(min_length=1, max_length=100)
     description: str | None = None
@@ -100,7 +75,6 @@ class TodoCreate(BaseModel):
 
         if not value:
             raise ValueError("Title cannot be empty")
-
         return value
 
 
@@ -109,18 +83,15 @@ class TodoUpdate(BaseModel):
     description: str | None = None
     completed: bool | None = None
     priority: int | None = Field(default=None, ge=1, le=5)
-
     @field_validator("title")
     @classmethod
     def validate_title(cls, value: str | None) -> str | None:
         if value is None:
             return None
-
         value = value.strip()
 
         if not value:
             raise ValueError("Title cannot be empty")
-
         return value
 
     @model_validator(mode="after")
@@ -132,7 +103,6 @@ class TodoUpdate(BaseModel):
             and self.priority is None
         ):
             raise ValueError("At least one field must be provided")
-
         return self
 
 
@@ -143,11 +113,7 @@ class TodoResponse(BaseModel):
     completed: bool
     priority: int
 
-
-# =========================
 # Health endpoints
-# =========================
-
 @app.get("/health/live")
 def health_live():
     return {
@@ -168,11 +134,7 @@ def health_ready(db: sqlite3.Connection = Depends(get_db)):
             detail="Database is not ready"
         )
 
-
-# =========================
 # CREATE
-# =========================
-
 @app.post("/todos", response_model=TodoResponse, status_code=201)
 def create_todo(
     todo: TodoCreate,
@@ -195,12 +157,10 @@ def create_todo(
     db.commit()
 
     todo_id = cursor.lastrowid
-
     row = db.execute(
         "SELECT * FROM todos WHERE id = ?",
         (todo_id,),
     ).fetchone()
-
     return {
         "id": row["id"],
         "title": row["title"],
@@ -209,11 +169,7 @@ def create_todo(
         "priority": row["priority"],
     }
 
-
-# =========================
 # GET LIST
-# =========================
-
 @app.get("/todos", response_model=list[TodoResponse])
 def get_todos(
     db: sqlite3.Connection = Depends(get_db),
@@ -221,7 +177,6 @@ def get_todos(
     rows = db.execute(
         "SELECT * FROM todos ORDER BY id"
     ).fetchall()
-
     return [
         {
             "id": row["id"],
@@ -233,11 +188,7 @@ def get_todos(
         for row in rows
     ]
 
-
-# =========================
-# GET DETAIL
-# =========================
-
+# Get detail
 @app.get("/todos/{todo_id}", response_model=TodoResponse)
 def get_todo(
     todo_id: int,
@@ -247,13 +198,11 @@ def get_todo(
         "SELECT * FROM todos WHERE id = ?",
         (todo_id,),
     ).fetchone()
-
     if row is None:
         raise HTTPException(
             status_code=404,
             detail="Todo not found"
         )
-
     return {
         "id": row["id"],
         "title": row["title"],
@@ -262,11 +211,7 @@ def get_todo(
         "priority": row["priority"],
     }
 
-
-# =========================
-# UPDATE
-# =========================
-
+# Update
 @app.put("/todos/{todo_id}", response_model=TodoResponse)
 def update_todo(
     todo_id: int,
@@ -277,37 +222,31 @@ def update_todo(
         "SELECT * FROM todos WHERE id = ?",
         (todo_id,),
     ).fetchone()
-
     if existing is None:
         raise HTTPException(
             status_code=404,
             detail="Todo not found"
         )
-
     title = (
         todo.title
         if todo.title is not None
         else existing["title"]
     )
-
     description = (
         todo.description
         if todo.description is not None
         else existing["description"]
     )
-
     completed = (
         todo.completed
         if todo.completed is not None
         else bool(existing["completed"])
     )
-
     priority = (
         todo.priority
         if todo.priority is not None
         else existing["priority"]
     )
-
     db.execute(
         """
         UPDATE todos
@@ -327,12 +266,10 @@ def update_todo(
     )
 
     db.commit()
-
     row = db.execute(
         "SELECT * FROM todos WHERE id = ?",
         (todo_id,),
     ).fetchone()
-
     return {
         "id": row["id"],
         "title": row["title"],
@@ -341,11 +278,7 @@ def update_todo(
         "priority": row["priority"],
     }
 
-
-# =========================
-# DELETE
-# =========================
-
+# Delete
 @app.delete("/todos/{todo_id}")
 def delete_todo(
     todo_id: int,
