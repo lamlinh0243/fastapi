@@ -245,8 +245,8 @@ Script kiểm tra:
 curl -X POST "http://127.0.0.1:8000/todos" \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Hoc FastAPI",
-    "description": "Lam bai tap FastAPI",
+    "title": "Cuoi tuan",
+    "description": "Mot ngay cuoi tuan on ao va bat luc",
     "completed": false,
     "priority": 1
   }'
