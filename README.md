@@ -1,8 +1,6 @@
-# FastAPI Homework - Todo API
 
-## 1. Chung
-
-API hỗ trợ các chức năng:
+## 1. Giới thiệu
+Hỗ trợ các chức năng:
 
 - Tạo Todo
 - Lấy danh sách Todo
@@ -66,8 +64,8 @@ Ví dụ:
 ```json
 {
   "id": 1,
-  "title": "Cuoi tuan",
-  "description": "Mot ngay cuoi tuan on ao va bat luc",
+  "title": "Hoc FastAPI",
+  "description": "Lam bai tap FastAPI",
   "completed": false,
   "priority": 1
 }
@@ -237,7 +235,51 @@ Script kiểm tra:
 - Update Todo
 - Delete Todo
 
-## 15. Ví dụ API
+
+## 15. Log chạy `curl.sh`
+
+Sau khi khởi động FastAPI bằng Uvicorn, chạy:
+
+```bash
+./curl.sh
+```
+
+Kết quả kiểm thử thành công:
+
+```text
+===== HEALTH LIVE =====
+{"status":"alive"}
+
+===== HEALTH READY =====
+{"status":"ready"}
+
+===== CREATE =====
+{"id":1,"title":"Cuoi tuan","description":"Mot ngay cuoi tuan on ao va bat luc","completed":false,"priority":1}
+
+===== GET LIST =====
+{"id":1,"title":"Cuoi tuan","description":"Mot ngay cuoi tuan on ao va bat luc","completed":false,"priority":1}
+
+===== GET DETAIL =====
+{"id":1,"title":"Cuoi tuan","description":"Mot ngay cuoi tuan on ao va bat luc","completed":false,"priority":1}
+
+===== UPDATE =====
+{"id":1,"title":"Cuoi tuan","description":"Mot ngay cuoi tuan on ao va bat luc","completed":false,"priority":1}
+
+===== DELETE =====
+{"message":"Todo deleted successfully"}
+```
+
+Log trên cho thấy các endpoint đã được kiểm tra thành công theo thứ tự:
+
+1. Health Live
+2. Health Ready
+3. Create Todo
+4. Get Todo List
+5. Get Todo Detail
+6. Update Todo
+7. Delete Todo
+
+## 16. Ví dụ API
 
 ### Create Todo
 
@@ -281,7 +323,19 @@ curl -X PUT "http://127.0.0.1:8000/todos/1" \
 curl -X DELETE "http://127.0.0.1:8000/todos/1"
 ```
 
-## 16. Requirements
+## 17. Git
+
+Sau khi thay đổi source code:
+
+```bash
+git status
+git add .
+git commit -m "Update Todo API"
+git push
+```
+
+
+## 18. Requirements
 
 Project cần đảm bảo chạy được các lệnh:
 
@@ -296,3 +350,4 @@ uv run uvicorn main:app --reload
 ```bash
 ./curl.sh
 ```
+
