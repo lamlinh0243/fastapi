@@ -1,10 +1,6 @@
 # FastAPI Homework - Todo API
 
-Mini FastAPI project được xây dựng nhằm thực hành và tổng hợp các kiến thức cơ bản về FastAPI, SQLite, Dependency Injection, CRUD API, CORS, lifespan và Pydantic validation.
-
-## 1. Giới thiệu
-
-Project xây dựng một Todo API đơn giản bằng Python và FastAPI.
+## 1. Chung
 
 API hỗ trợ các chức năng:
 
