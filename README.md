@@ -64,8 +64,8 @@ Ví dụ:
 ```json
 {
   "id": 1,
-  "title": "Hoc FastAPI",
-  "description": "Lam bai tap FastAPI",
+  "title": "Cuoi tuan",
+  "description": "Mot ngay cuoi tuan on ao va bat luc",
   "completed": false,
   "priority": 1
 }
